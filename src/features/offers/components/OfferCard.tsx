@@ -39,6 +39,7 @@ export default function OfferCard({ offer, product: productProp }: OfferCardProp
         unit: product.unit || 'unidade',
         image_url: product.image_url,
         is_available: true,
+      sku: null,
         category: 'outros' as any,
         seller_id: offer.seller_id,
         seller_name: offer.seller_name || null,

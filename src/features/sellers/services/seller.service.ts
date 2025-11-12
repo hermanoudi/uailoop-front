@@ -3,7 +3,7 @@
  */
 
 import { api } from '../../../services/api';
-import type { Seller, SellerListItem, SellersResponse } from '../../../types/seller';
+import type { Seller, SellerListItem, SellersResponse, SellerCreateInput } from '../../../types/seller';
 
 export interface GetSellersParams {
   page?: number;
@@ -39,5 +39,29 @@ export const sellerService = {
     params?: Omit<GetSellersParams, 'category'>
   ): Promise<SellersResponse> {
     return this.getSellers({ ...params, category });
+  },
+
+  /**
+   * Create a new seller (onboarding)
+   */
+  async createSeller(data: SellerCreateInput): Promise<Seller> {
+    const response = await api.post<Seller>('/sellers/', data);
+    return response.data;
+  },
+
+  /**
+   * Get current user's seller profile
+   */
+  async getMySeller(): Promise<Seller> {
+    const response = await api.get<Seller>('/sellers/me');
+    return response.data;
+  },
+
+  /**
+   * Update current user's seller profile
+   */
+  async updateMySeller(data: Partial<SellerCreateInput>): Promise<Seller> {
+    const response = await api.patch<Seller>('/sellers/me', data);
+    return response.data;
   },
 };

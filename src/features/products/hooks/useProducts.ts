@@ -17,7 +17,11 @@ interface UseProductsResult {
   refetch: () => Promise<void>;
 }
 
-export function useProducts(params?: GetProductsParams): UseProductsResult {
+interface UseProductsOptions extends GetProductsParams {
+  cep?: string | null;
+}
+
+export function useProducts(params?: UseProductsOptions): UseProductsResult {
   const [products, setProducts] = useState<ProductListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -29,7 +33,12 @@ export function useProducts(params?: GetProductsParams): UseProductsResult {
     try {
       setLoading(true);
       setError(null);
-      const response = await productService.getProducts(params);
+
+      // If CEP is provided, use CEP-based filtering
+      const response = params?.cep
+        ? await productService.getProductsByCep(params.cep, params)
+        : await productService.getProducts(params);
+
       setProducts(response.items);
       setTotal(response.total);
       setPage(response.page);

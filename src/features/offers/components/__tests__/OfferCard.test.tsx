@@ -19,6 +19,7 @@ const mockOffer: OfferListItem = {
   id: 1,
   seller_id: 1,
   seller_name: 'Açougue do João',
+      sku: null,
   product_id: 1,
   title: 'Picanha Premium em Oferta',
   description: 'Oferta especial de picanha',

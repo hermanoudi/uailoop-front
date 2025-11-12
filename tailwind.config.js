@@ -13,6 +13,19 @@ export default {
           dark: '#1AA34A',    // Verde escuro
           light: '#1ED760',   // Verde claro
         },
+        'green-uai': {
+          DEFAULT: '#1DB954', // Verde principal (alias para primary)
+          50: '#F0FDF4',
+          100: '#DCFCE7',
+          200: '#BBF7D0',
+          300: '#86EFAC',
+          400: '#4ADE80',
+          500: '#1DB954',
+          600: '#1AA34A',
+          700: '#15803D',
+          800: '#166534',
+          900: '#14532D',
+        },
         dark: {
           DEFAULT: '#191414', // Preto
           gray: '#282828',    // Cinza escuro

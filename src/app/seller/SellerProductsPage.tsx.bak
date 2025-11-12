@@ -1,0 +1,218 @@
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { Plus, Edit, Trash2, Package, Eye } from 'lucide-react';
+import { api } from '../../services/api';
+import type { Product } from '../../types/product';
+
+export default function SellerProductsPage() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const loadProducts = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      // Buscar apenas os produtos do vendedor autenticado
+      const response = await api.get('/products/my-products', {
+        params: {
+          limit: 100,
+        },
+      });
+
+      setProducts(response.data || []);
+    } catch (err: any) {
+      console.error('Erro ao carregar produtos:', err);
+      setError('Erro ao carregar produtos. Tente novamente.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadProducts();
+  }, []);
+
+  const handleDeleteProduct = async (productId: number) => {
+    if (!confirm('Tem certeza que deseja excluir este produto?')) {
+      return;
+    }
+
+    try {
+      await api.delete(`/products/${productId}`);
+      await loadProducts();
+      alert('Produto excluído com sucesso!');
+    } catch (err: any) {
+      console.error('Erro ao excluir produto:', err);
+      alert('Erro ao excluir produto. Tente novamente.');
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-8">
+        <div className="container-custom px-4">
+          <div className="flex justify-center items-center py-20">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="container-custom px-4">
+        {/* Header */}
+        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">Meus Produtos</h1>
+              <p className="text-gray-600 mt-1">
+                Gerencie seus produtos e variações (SKUs)
+              </p>
+            </div>
+            <Link
+              to="/seller/products/new"
+              className="flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary-dark transition-colors"
+            >
+              <Plus className="w-5 h-5" />
+              Novo Produto
+            </Link>
+          </div>
+        </div>
+
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
+            {error}
+          </div>
+        )}
+
+        {/* Products Grid */}
+        {products.length === 0 ? (
+          <div className="bg-white rounded-lg shadow-md p-12 text-center">
+            <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              Nenhum produto cadastrado
+            </h3>
+            <p className="text-gray-600 mb-6">
+              Comece cadastrando seu primeiro produto para começar a vender
+            </p>
+            <Link
+              to="/seller/products/new"
+              className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary-dark transition-colors"
+            >
+              <Plus className="w-5 h-5" />
+              Cadastrar Primeiro Produto
+            </Link>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {products.map((product) => (
+              <div
+                key={product.id}
+                className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
+              >
+                {/* Product Image */}
+                <div className="relative h-48 bg-gray-200">
+                  {product.image_url ? (
+                    <img
+                      src={product.image_url}
+                      alt={product.name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <Package className="w-16 h-16 text-gray-400" />
+                    </div>
+                  )}
+
+                  {/* Status Badge */}
+                  <div className="absolute top-2 right-2">
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                        product.is_available
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-red-100 text-red-800'
+                      }`}
+                    >
+                      {product.is_available ? 'Disponível' : 'Indisponível'}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Product Info */}
+                <div className="p-4">
+                  <h3 className="font-semibold text-lg text-gray-900 mb-2 truncate">
+                    {product.name}
+                  </h3>
+
+                  {product.description && (
+                    <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                      {product.description}
+                    </p>
+                  )}
+
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <span className="text-2xl font-bold text-primary">
+                        R$ {Number(product.price).toFixed(2)}
+                      </span>
+                      <span className="text-sm text-gray-500 ml-1">/{product.unit}</span>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-xs text-gray-500">Estoque</p>
+                      <p className="text-sm font-semibold text-gray-900">
+                        {product.stock_quantity !== null
+                          ? Number(product.stock_quantity).toFixed(0)
+                          : 'N/A'}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* SKU Display */}
+                  {product.sku && (
+                    <div className="mb-3 px-3 py-2 bg-gray-50 rounded-lg">
+                      <p className="text-xs text-gray-500">Código SKU</p>
+                      <p className="text-sm font-mono font-semibold text-gray-900">
+                        {product.sku}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Actions */}
+                  <div className="flex gap-2">
+                    <Link
+                      to={`/product/${product.id}`}
+                      className="flex items-center justify-center px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                      title="Visualizar produto"
+                    >
+                      <Eye className="w-4 h-4 text-gray-600" />
+                    </Link>
+
+                    <Link
+                      to={`/seller/products/${product.id}/edit`}
+                      className="flex items-center justify-center px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                      title="Editar produto"
+                    >
+                      <Edit className="w-4 h-4 text-gray-600" />
+                    </Link>
+
+                    <button
+                      onClick={() => handleDeleteProduct(product.id)}
+                      className="flex items-center justify-center px-3 py-2 border border-red-300 rounded-lg hover:bg-red-50 transition-colors"
+                      title="Excluir produto"
+                    >
+                      <Trash2 className="w-4 h-4 text-red-600" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

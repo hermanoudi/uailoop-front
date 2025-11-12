@@ -1,9 +1,10 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, User, MapPin, ShoppingCart, Menu, LogOut, LayoutDashboard, Package } from 'lucide-react';
+import { Search, User, MapPin, ShoppingCart, Menu, LogOut, LayoutDashboard, Package, Settings, BoxIcon } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { useCart } from '../../contexts/CartContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { NotificationBell } from '../../features/notifications/components';
+import { CEPSelector } from '../location';
 
 export default function Header() {
   const { cart } = useCart();
@@ -83,13 +84,12 @@ export default function Header() {
           {/* Actions */}
           <div className="flex items-center gap-4">
             {/* Location */}
-            <button className="hidden md:flex items-center gap-2 px-4 py-2 hover:bg-gray-50 rounded-lg transition-colors">
-              <MapPin className="w-5 h-5 text-primary" />
-              <div className="text-left">
-                <p className="text-xs text-light-gray">Entrego aqui?</p>
-                <p className="text-sm font-medium text-dark">30110-000</p>
-              </div>
-            </button>
+            <div className="hidden md:block">
+              <CEPSelector onCepChange={() => {
+                // Reload page to fetch products for new location
+                window.location.reload();
+              }} />
+            </div>
 
             {/* Account */}
             {isAuthenticated ? (
@@ -127,14 +127,32 @@ export default function Header() {
                     </Link>
 
                     {user?.is_seller ? (
-                      <Link
-                        to="/seller/orders"
-                        className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
-                        onClick={() => setShowUserMenu(false)}
-                      >
-                        <Package className="w-4 h-4 text-dark" />
-                        <span className="text-sm text-dark">Gerenciar Pedidos</span>
-                      </Link>
+                      <>
+                        <Link
+                          to="/seller/profile"
+                          className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
+                          onClick={() => setShowUserMenu(false)}
+                        >
+                          <Settings className="w-4 h-4 text-dark" />
+                          <span className="text-sm text-dark">Minha Conta</span>
+                        </Link>
+                        <Link
+                          to="/seller/products"
+                          className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
+                          onClick={() => setShowUserMenu(false)}
+                        >
+                          <BoxIcon className="w-4 h-4 text-dark" />
+                          <span className="text-sm text-dark">Gerenciar Produtos</span>
+                        </Link>
+                        <Link
+                          to="/seller/orders"
+                          className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
+                          onClick={() => setShowUserMenu(false)}
+                        >
+                          <Package className="w-4 h-4 text-dark" />
+                          <span className="text-sm text-dark">Gerenciar Pedidos</span>
+                        </Link>
+                      </>
                     ) : (
                       <Link
                         to="/orders"

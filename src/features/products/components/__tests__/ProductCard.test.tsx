@@ -24,6 +24,7 @@ const mockProduct: ProductListItem = {
   image_url: 'https://example.com/picanha.jpg',
   seller_id: 1,
   seller_name: 'Açougue do João',
+      sku: null,
   is_available: true,
 };
 

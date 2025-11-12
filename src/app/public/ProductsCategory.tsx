@@ -3,8 +3,9 @@
  */
 
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, MapPin } from 'lucide-react';
 import { useProducts } from '../../features/products/hooks/useProducts';
+import { useLocation } from '../../contexts/LocationContext';
 import ProductCard from '../../features/products/components/ProductCard';
 import Loading from '../../components/ui/Loading';
 import type { ProductCategory } from '../../types/product';
@@ -49,11 +50,13 @@ const categoryInfo: Record<string, { title: string; icon: string; description: s
 
 export default function ProductsCategory() {
   const { category } = useParams<{ category: string }>();
+  const { cep, clearCep } = useLocation();
 
-  // Buscar produtos da categoria
+  // Buscar produtos da categoria (filtrado por CEP se disponível)
   const { products, loading, error, total } = useProducts({
     category: category as ProductCategory,
     size: 50,
+    cep: cep || undefined,
   });
 
   const info = category ? categoryInfo[category] : null;
@@ -95,9 +98,19 @@ export default function ProductsCategory() {
             </div>
           </div>
           {!loading && (
-            <p className="mt-4 text-light-gray">
-              {total} {total === 1 ? 'produto encontrado' : 'produtos encontrados'}
-            </p>
+            <div className="mt-4 flex items-center gap-4 flex-wrap">
+              <p className="text-light-gray">
+                {total} {total === 1 ? 'produto encontrado' : 'produtos encontrados'}
+              </p>
+              {cep && (
+                <div className="flex items-center gap-2 bg-green-50 border border-green-200 px-3 py-1 rounded-full">
+                  <MapPin className="w-4 h-4 text-green-700" />
+                  <span className="text-xs text-green-700 font-medium">
+                    Entregando em: {cep}
+                  </span>
+                </div>
+              )}
+            </div>
           )}
         </div>
       </div>
@@ -121,16 +134,44 @@ export default function ProductsCategory() {
             <h2 className="text-2xl font-bold text-dark mb-2">
               Nenhum produto encontrado
             </h2>
-            <p className="text-light-gray mb-6">
-              Ainda não há produtos cadastrados nesta categoria.
-            </p>
-            <Link
-              to="/"
-              className="text-primary hover:underline inline-flex items-center gap-2"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Voltar para home
-            </Link>
+            {cep ? (
+              <>
+                <p className="text-light-gray mb-4">
+                  Ainda não temos vendedores em sua região para esta categoria.
+                </p>
+                <div className="flex items-center justify-center gap-2 text-sm text-gray-600 mb-6">
+                  <MapPin className="w-4 h-4" />
+                  <span>CEP: {cep}</span>
+                </div>
+                <button
+                  onClick={() => clearCep()}
+                  className="text-primary hover:underline mb-4 font-medium"
+                >
+                  Limpar CEP e ver todos os produtos
+                </button>
+                <br />
+                <Link
+                  to="/"
+                  className="text-gray-500 hover:underline inline-flex items-center gap-2"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  Voltar para home
+                </Link>
+              </>
+            ) : (
+              <>
+                <p className="text-light-gray mb-6">
+                  Ainda não há produtos cadastrados nesta categoria.
+                </p>
+                <Link
+                  to="/"
+                  className="text-primary hover:underline inline-flex items-center gap-2"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  Voltar para home
+                </Link>
+              </>
+            )}
           </div>
         )}
 

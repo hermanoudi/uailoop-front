@@ -68,6 +68,7 @@ export interface OrderListItem {
   delivery_city: string;
   created_at: string;
   items_count: number;
+  items: OrderItem[];  // Include full items data for UI display
 }
 
 export interface OrderItemCreate {

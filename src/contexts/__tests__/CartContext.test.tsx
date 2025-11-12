@@ -22,6 +22,7 @@ const mockProduct: ProductListItem = {
   image_url: 'https://example.com/image.jpg',
   seller_id: 1,
   seller_name: 'Test Seller',
+      sku: null,
   is_available: true,
 };
 

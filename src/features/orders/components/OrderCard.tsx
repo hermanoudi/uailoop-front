@@ -3,7 +3,7 @@
  */
 
 import { Link } from 'react-router-dom';
-import { Calendar, MapPin, CreditCard, Package } from 'lucide-react';
+import { Calendar, MapPin, CreditCard, Package, User } from 'lucide-react';
 import type { OrderListItem } from '../../../types/order';
 import { formatCurrency } from '../../../lib/formatters';
 import OrderStatusBadge from './OrderStatusBadge';
@@ -41,6 +41,46 @@ export default function OrderCard({ order }: OrderCardProps) {
           </p>
         </div>
         <OrderStatusBadge status={order.status} />
+      </div>
+
+      {/* Customer Name */}
+      <div className="mb-3 pb-3 border-b border-gray-200">
+        <div className="flex items-center gap-2 text-sm">
+          <User className="w-4 h-4 text-gray-500" />
+          <span className="font-medium text-gray-700">Cliente:</span>
+          <span className="text-gray-900">{order.customer_name}</span>
+        </div>
+      </div>
+
+      {/* Order Items */}
+      <div className="mb-4 space-y-2">
+        <p className="text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+          Itens do Pedido
+        </p>
+        <div className="space-y-1.5 max-h-32 overflow-y-auto">
+          {order.items && order.items.length > 0 ? (
+            order.items.map((item) => (
+              <div
+                key={item.id}
+                className="flex justify-between items-start text-sm bg-gray-50 rounded px-3 py-2"
+              >
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-gray-900 truncate">
+                    {item.product_name}
+                  </p>
+                  <p className="text-xs text-gray-600">
+                    {item.quantity} {item.product_unit} × {formatCurrency(item.unit_price)}
+                  </p>
+                </div>
+                <span className="ml-2 font-semibold text-gray-900 whitespace-nowrap">
+                  {formatCurrency(item.subtotal)}
+                </span>
+              </div>
+            ))
+          ) : (
+            <p className="text-xs text-gray-500 italic">Nenhum item</p>
+          )}
+        </div>
       </div>
 
       <div className="space-y-2 mb-4">

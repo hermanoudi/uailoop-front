@@ -23,6 +23,7 @@ export interface Product {
   category: ProductCategory;
   price: number | string;
   unit: string;
+  sku: string | null;
   stock_quantity: number | string | null;
   is_available: boolean;
   is_active: boolean;
@@ -43,6 +44,7 @@ export interface ProductListItem {
   category: ProductCategory;
   price: number | string;
   unit: string;
+  sku: string | null;
   image_url: string | null;
   is_available: boolean;
   seller_id: number;

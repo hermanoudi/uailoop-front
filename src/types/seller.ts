@@ -19,6 +19,8 @@ export interface Seller {
   neighborhood: string;
   city: string;
   state: string;
+  latitude: number | string | null;
+  longitude: number | string | null;
   delivery_radius_km: number | string | null;
   min_order_value: number | string | null;
   delivery_fee: number | string | null;
@@ -52,3 +54,33 @@ export interface SellersResponse {
   size: number;
   pages: number;
 }
+
+export interface SellerCreateInput {
+  business_name: string;
+  cnpj: string;
+  description?: string;
+  category: string;
+  business_phone?: string;
+  business_email?: string;
+  website?: string;
+  cep: string;
+  street: string;
+  number: string;
+  complement?: string;
+  neighborhood: string;
+  city: string;
+  state: string;
+  delivery_radius_km?: number;
+  min_order_value?: number;
+  delivery_fee?: number;
+}
+
+export const SELLER_CATEGORIES = [
+  { value: 'acougues', label: '🥩 Açougues' },
+  { value: 'padarias', label: '🥖 Padarias' },
+  { value: 'limpeza', label: '🧹 Limpeza' },
+  { value: 'hortifruti', label: '🥗 Hortifruti' },
+  { value: 'bebidas', label: '🥤 Bebidas' },
+  { value: 'pet', label: '🐾 Pet' },
+  { value: 'outros', label: '📦 Outros' },
+] as const;

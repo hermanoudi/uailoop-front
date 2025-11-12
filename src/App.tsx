@@ -4,6 +4,7 @@ import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './contexts/AuthContext';
 import { CartProvider } from './contexts/CartContext';
 import { NotificationProvider } from './contexts/NotificationContext';
+import { LocationProvider } from './contexts/LocationContext';
 import { MainLayout } from './components/layout';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 
@@ -20,6 +21,8 @@ const queryClient = new QueryClient({
 import Home from './app/public/Home';
 import LoginPage from './app/public/LoginPage';
 import RegisterPage from './app/public/RegisterPage';
+import ForgotPasswordPage from './app/public/ForgotPasswordPage';
+import ResetPasswordPage from './app/public/ResetPasswordPage';
 import ProductsCategory from './app/public/ProductsCategory';
 import ProductDetail from './app/public/ProductDetail';
 import OffersPage from './app/public/OffersPage';
@@ -30,14 +33,21 @@ import CheckoutPage from './app/public/CheckoutPage';
 import OrdersPage from './app/public/OrdersPage';
 import OrderDetailPage from './app/public/OrderDetailPage';
 import SellerOrdersPage from './app/seller/SellerOrdersPage';
+import SellerProductsPage from './app/seller/SellerProductsPage';
+import SellerDashboardPage from './app/seller/SellerDashboardPage';
+import SellerOnboarding from './features/seller/pages/SellerOnboarding';
+import SellerProfilePage from './features/seller/pages/SellerProfilePage';
+import ForSellersPage from './app/public/ForSellersPage';
+import ProductCreatePage from './features/products/pages/ProductCreatePage';
 
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Router>
         <AuthProvider>
-          <NotificationProvider>
-            <CartProvider>
+          <LocationProvider>
+            <NotificationProvider>
+              <CartProvider>
         <Toaster
           position="top-right"
           toastOptions={{
@@ -62,7 +72,9 @@ function App() {
           <Route path="/explore" element={<div className="container-custom py-20">Explorar (em construção)</div>} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/for-sellers" element={<div className="container-custom py-20">Para Vendedores (em construção)</div>} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
+          <Route path="/for-sellers" element={<ForSellersPage />} />
 
           {/* Product Categories */}
           <Route path="/products/:category" element={<ProductsCategory />} />
@@ -85,12 +97,32 @@ function App() {
             }
           />
 
+          {/* Seller Onboarding - Protected */}
+          <Route
+            path="/seller/onboarding"
+            element={
+              <ProtectedRoute>
+                <SellerOnboarding />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Seller Profile - Protected (Sellers Only) */}
+          <Route
+            path="/seller/profile"
+            element={
+              <ProtectedRoute requireSeller>
+                <SellerProfilePage />
+              </ProtectedRoute>
+            }
+          />
+
           {/* Seller Dashboard - Protected (Sellers Only) */}
           <Route
             path="/seller/dashboard"
             element={
               <ProtectedRoute requireSeller>
-                <div className="container-custom py-20">Dashboard Vendedor (em construção)</div>
+                <SellerDashboardPage />
               </ProtectedRoute>
             }
           />
@@ -138,6 +170,24 @@ function App() {
             }
           />
 
+          {/* Seller Products - Protected (Sellers Only) */}
+          <Route
+            path="/seller/products"
+            element={
+              <ProtectedRoute requireSeller>
+                <SellerProductsPage />
+              </ProtectedRoute>
+            }
+          />
+          {/* Seller Product Create - Protected (Sellers Only) */}
+          <Route
+            path="/seller/products/new"
+            element={
+              <ProtectedRoute requireSeller>
+                <ProductCreatePage />
+              </ProtectedRoute>
+            }
+          />
           {/* Seller Orders - Protected (Sellers Only) */}
           <Route
             path="/seller/orders"
@@ -148,12 +198,14 @@ function App() {
             }
           />
 
+
           {/* 404 */}
           <Route path="*" element={<div className="container-custom py-20 text-center"><h1 className="text-4xl font-bold">404 - Página não encontrada</h1></div>} />
         </Route>
       </Routes>
-            </CartProvider>
-          </NotificationProvider>
+              </CartProvider>
+            </NotificationProvider>
+          </LocationProvider>
         </AuthProvider>
       </Router>
     </QueryClientProvider>
