@@ -32,54 +32,12 @@ export interface DeliveryAddress {
   state: string;
 }
 
-// Subscription Plan
-export interface SubscriptionPlan {
-  id: number;
-  seller_id: number;
-  seller_name?: string; // Business name of the seller
-  name: string;
-  description?: string;
-  available_frequencies: SubscriptionFrequency[];
-  price: number;
-  delivery_fee?: number;
-  discount_percentage?: number;
-  products: SubscriptionProduct[];
-  is_active: boolean;
-  image_url?: string;
-  created_at: string;
-  updated_at?: string;
-}
-
-export interface SubscriptionPlanCreate {
-  name: string;
-  description?: string;
-  available_frequencies: SubscriptionFrequency[];
-  price: number;
-  delivery_fee?: number;
-  discount_percentage?: number;
-  products: SubscriptionProduct[];
-  is_active?: boolean;
-  image_url?: string;
-}
-
-export interface SubscriptionPlanUpdate {
-  name?: string;
-  description?: string;
-  available_frequencies?: SubscriptionFrequency[];
-  price?: number;
-  delivery_fee?: number;
-  discount_percentage?: number;
-  products?: SubscriptionProduct[];
-  is_active?: boolean;
-  image_url?: string;
-}
-
 // Subscription
 export interface Subscription {
   id: number;
   customer_id: number;
   seller_id: number;
-  plan_id?: number;
+  source_order_id?: number;
   frequency: SubscriptionFrequency;
   status: SubscriptionStatus;
   products: Array<{
@@ -105,7 +63,7 @@ export interface Subscription {
 
 export interface SubscriptionCreate {
   seller_id: number;
-  plan_id?: number;
+  source_order_id?: number;
   frequency: SubscriptionFrequency;
   products: SubscriptionProduct[];
   delivery_address: DeliveryAddress;

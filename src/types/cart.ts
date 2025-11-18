@@ -3,11 +3,14 @@
  */
 
 import type { ProductListItem } from './product';
+import type { SubscriptionFrequency } from './subscription';
 
 export interface CartItem {
   product: ProductListItem;
   quantity: number;
   subtotal: number;
+  isSubscription?: boolean;
+  subscriptionFrequency?: SubscriptionFrequency;
 }
 
 export interface Cart {
@@ -24,4 +27,5 @@ export interface CartContextType {
   clearCart: () => void;
   isInCart: (productId: number) => boolean;
   getItemQuantity: (productId: number) => number;
+  toggleSubscription: (productId: number, isSubscription: boolean, frequency?: SubscriptionFrequency) => void;
 }

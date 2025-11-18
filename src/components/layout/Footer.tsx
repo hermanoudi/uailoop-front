@@ -107,11 +107,6 @@ export default function Footer() {
                   Limpeza
                 </Link>
               </li>
-              <li>
-                <Link to="/offers" className="text-light-gray hover:text-primary transition-colors">
-                  Super Ofertas
-                </Link>
-              </li>
             </ul>
           </div>
 

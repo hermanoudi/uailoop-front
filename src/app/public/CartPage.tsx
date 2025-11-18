@@ -2,8 +2,9 @@
  * CartPage - Shopping cart page
  */
 
+import { useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, ShoppingBag, Trash2, CreditCard } from 'lucide-react';
+import { ArrowLeft, ShoppingBag, Trash2, CreditCard, Check } from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
 import CartItem from '../../features/cart/components/CartItem';
 import { formatCurrency } from '../../lib/formatters';
@@ -12,6 +13,23 @@ import Button from '../../components/ui/Button';
 export default function CartPage() {
   const navigate = useNavigate();
   const { cart, clearCart } = useCart();
+
+  // Calculate totals with subscription discount
+  const calculatedTotals = useMemo(() => {
+    let subtotal = 0;
+    let subscriptionDiscount = 0;
+
+    cart.items.forEach(item => {
+      subtotal += item.subtotal;
+      if (item.isSubscription) {
+        subscriptionDiscount += item.subtotal * 0.1;
+      }
+    });
+
+    const total = subtotal - subscriptionDiscount;
+
+    return { subtotal, subscriptionDiscount, total };
+  }, [cart.items]);
 
   if (cart.items.length === 0) {
     return (
@@ -94,8 +112,17 @@ export default function CartPage() {
               <div className="space-y-4 mb-6">
                 <div className="flex justify-between text-light-gray">
                   <span>Subtotal ({cart.totalItems} itens)</span>
-                  <span>{formatCurrency(cart.totalPrice)}</span>
+                  <span>{formatCurrency(calculatedTotals.subtotal)}</span>
                 </div>
+                {calculatedTotals.subscriptionDiscount > 0 && (
+                  <div className="flex justify-between text-green-600">
+                    <span className="flex items-center gap-1">
+                      <Check className="w-4 h-4" />
+                      Desconto de assinatura (10%)
+                    </span>
+                    <span className="font-semibold">-{formatCurrency(calculatedTotals.subscriptionDiscount)}</span>
+                  </div>
+                )}
                 <div className="flex justify-between text-light-gray">
                   <span>Entrega</span>
                   <span className="text-primary font-semibold">A calcular</span>
@@ -104,7 +131,7 @@ export default function CartPage() {
                   <div className="flex justify-between">
                     <span className="text-xl font-bold text-dark">Total</span>
                     <span className="text-2xl font-bold text-primary">
-                      {formatCurrency(cart.totalPrice)}
+                      {formatCurrency(calculatedTotals.total)}
                     </span>
                   </div>
                 </div>

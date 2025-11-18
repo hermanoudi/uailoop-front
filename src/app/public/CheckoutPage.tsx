@@ -2,18 +2,20 @@
  * Checkout Page - Finalize order
  */
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import toast from 'react-hot-toast';
-import { ShoppingBag, CreditCard, MapPin, User, Phone } from 'lucide-react';
+import { ShoppingBag, CreditCard, MapPin, User, Repeat, Check } from 'lucide-react';
 
 import { useCart } from '../../contexts/CartContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { orderService } from '../../features/orders/services/order.service';
+import { subscriptionService } from '../../services/subscriptionService';
 import type { OrderCreate, PaymentMethod } from '../../types/order';
+import type { SubscriptionCreate, DeliveryAddress } from '../../types/subscription';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import { formatCurrency } from '../../lib/formatters';
@@ -75,6 +77,27 @@ export default function CheckoutPage() {
   // Get seller_id from first item (assuming all items are from same seller)
   const sellerId = cart.items[0].product.seller_id;
 
+  // Calculate totals with subscription discount
+  const calculatedTotals = useMemo(() => {
+    let subtotal = 0;
+    let subscriptionDiscount = 0;
+
+    cart.items.forEach(item => {
+      subtotal += item.subtotal;
+      if (item.isSubscription) {
+        // Apply 10% discount for subscription items
+        subscriptionDiscount += item.subtotal * 0.1;
+      }
+    });
+
+    const total = subtotal - subscriptionDiscount;
+
+    return { subtotal, subscriptionDiscount, total };
+  }, [cart.items]);
+
+  // Check if cart has any subscription items
+  const hasSubscriptions = cart.items.some(item => item.isSubscription);
+
   const onSubmit = async (data: CheckoutFormData) => {
     if (!user) {
       toast.error('Você precisa estar logado para finalizar o pedido');
@@ -85,6 +108,7 @@ export default function CheckoutPage() {
     setIsSubmitting(true);
 
     try {
+      // Create order first
       const orderData: OrderCreate = {
         seller_id: sellerId,
         items: cart.items.map(item => ({
@@ -105,7 +129,53 @@ export default function CheckoutPage() {
 
       const order = await orderService.createOrder(orderData);
 
-      toast.success('Pedido realizado com sucesso!');
+      // Create subscriptions for items marked as subscription
+      const subscriptionItems = cart.items.filter(item => item.isSubscription);
+
+      if (subscriptionItems.length > 0) {
+        // Group by frequency (each frequency becomes a separate subscription)
+        const subscriptionsByFrequency = subscriptionItems.reduce((acc, item) => {
+          const freq = item.subscriptionFrequency!;
+          if (!acc[freq]) {
+            acc[freq] = [];
+          }
+          acc[freq].push(item);
+          return acc;
+        }, {} as Record<string, typeof subscriptionItems>);
+
+        // Create a subscription for each frequency group
+        for (const [frequency, items] of Object.entries(subscriptionsByFrequency)) {
+          const deliveryAddressData: DeliveryAddress = {
+            cep: data.delivery_zipcode.replace(/\D/g, ''),
+            street: data.delivery_address,
+            number: data.delivery_number,
+            complement: data.delivery_instructions || undefined,
+            neighborhood: '', // Could be added to form if needed
+            city: data.delivery_city,
+            state: data.delivery_state.toUpperCase(),
+          };
+
+          const subscriptionData: SubscriptionCreate = {
+            seller_id: sellerId,
+            source_order_id: order.id,
+            frequency: frequency as any,
+            products: items.map(item => ({
+              product_id: item.product.id,
+              quantity: item.quantity,
+              price: Number(item.product.price),
+            })),
+            delivery_address: deliveryAddressData,
+            payment_method: data.payment_method,
+          };
+
+          await subscriptionService.create(subscriptionData);
+        }
+
+        toast.success('Pedido e assinatura(s) criada(s) com sucesso!');
+      } else {
+        toast.success('Pedido realizado com sucesso!');
+      }
+
       clearCart();
       navigate(`/orders/${order.id}`);
     } catch (error: any) {
@@ -238,13 +308,21 @@ export default function CheckoutPage() {
 
             <div className="space-y-3 mb-4">
               {cart.items.map((item) => (
-                <div key={item.product.id} className="flex justify-between text-sm">
-                  <span className="text-gray-600">
-                    {item.quantity}x {item.product.name}
-                  </span>
-                  <span className="font-semibold">
-                    {formatCurrency(item.subtotal)}
-                  </span>
+                <div key={item.product.id}>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">
+                      {item.quantity}x {item.product.name}
+                    </span>
+                    <span className="font-semibold">
+                      {formatCurrency(item.subtotal)}
+                    </span>
+                  </div>
+                  {item.isSubscription && (
+                    <div className="flex items-center gap-1 text-xs text-green-600 mt-1">
+                      <Repeat className="w-3 h-3" />
+                      <span>Assinatura ativa - 10% de desconto</span>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -252,11 +330,20 @@ export default function CheckoutPage() {
             <div className="border-t pt-4 space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">Subtotal</span>
-                <span className="font-semibold">{formatCurrency(cart.totalPrice)}</span>
+                <span className="font-semibold">{formatCurrency(calculatedTotals.subtotal)}</span>
               </div>
+              {calculatedTotals.subscriptionDiscount > 0 && (
+                <div className="flex justify-between text-sm text-green-600">
+                  <span className="flex items-center gap-1">
+                    <Check className="w-4 h-4" />
+                    Desconto de assinatura
+                  </span>
+                  <span className="font-semibold">-{formatCurrency(calculatedTotals.subscriptionDiscount)}</span>
+                </div>
+              )}
               <div className="flex justify-between text-lg font-bold text-primary">
                 <span>Total</span>
-                <span>{formatCurrency(cart.totalPrice)}</span>
+                <span>{formatCurrency(calculatedTotals.total)}</span>
               </div>
             </div>
 

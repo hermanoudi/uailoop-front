@@ -21,6 +21,13 @@ export default function Header() {
     navigate('/');
   };
 
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
+
   // Close user menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -69,16 +76,18 @@ export default function Header() {
 
           {/* Search Bar */}
           <div className="flex-1 max-w-2xl">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-light-gray w-5 h-5" />
-              <input
-                type="text"
-                placeholder="Busque por produtos ou vendedores..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-light-gray rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              />
-            </div>
+            <form onSubmit={handleSearch}>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-light-gray w-5 h-5" />
+                <input
+                  type="text"
+                  placeholder="Busque por produtos..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 border border-light-gray rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                />
+              </div>
+            </form>
           </div>
 
           {/* Actions */}
@@ -151,14 +160,6 @@ export default function Header() {
                         >
                           <Package className="w-4 h-4 text-dark" />
                           <span className="text-sm text-dark">Gerenciar Pedidos</span>
-                        </Link>
-                        <Link
-                          to="/seller/subscription-plans"
-                          className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
-                          onClick={() => setShowUserMenu(false)}
-                        >
-                          <Repeat className="w-4 h-4 text-dark" />
-                          <span className="text-sm text-dark">Planos de Assinatura</span>
                         </Link>
                         <Link
                           to="/seller/subscriptions"
@@ -304,23 +305,6 @@ export default function Header() {
                 🐾 PET
               </Link>
             </li>
-            <li>
-              <Link
-                to="/subscription-plans"
-                className="text-dark hover:text-primary font-medium transition-colors flex items-center gap-2"
-              >
-                <Repeat className="w-5 h-5" />
-                ASSINATURAS
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/offers"
-                className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors font-medium"
-              >
-                SUPER OFERTAS
-              </Link>
-            </li>
           </ul>
 
           {/* Mobile Menu */}
@@ -361,19 +345,6 @@ export default function Header() {
                 className="block py-2 text-dark hover:text-primary font-medium"
               >
                 🐾 PET
-              </Link>
-              <Link
-                to="/subscription-plans"
-                className="flex items-center gap-2 py-2 text-dark hover:text-primary font-medium"
-              >
-                <Repeat className="w-5 h-5" />
-                ASSINATURAS
-              </Link>
-              <Link
-                to="/offers"
-                className="block py-2 text-primary font-medium"
-              >
-                SUPER OFERTAS
               </Link>
 
               <div className="border-t pt-4 mt-4 space-y-2">

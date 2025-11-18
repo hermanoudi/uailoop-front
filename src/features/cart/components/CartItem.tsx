@@ -2,18 +2,21 @@
  * CartItem - Component to display a single cart item
  */
 
-import { Minus, Plus, Trash2 } from 'lucide-react';
+import { useState } from 'react';
+import { Minus, Plus, Trash2, Repeat, Check } from 'lucide-react';
 import { useCart } from '../../../contexts/CartContext';
 import { formatCurrency } from '../../../lib/formatters';
 import type { CartItem as CartItemType } from '../../../types/cart';
+import { SubscriptionFrequency, SubscriptionFrequencyLabels } from '../../../types/subscription';
 
 interface CartItemProps {
   item: CartItemType;
 }
 
 export default function CartItem({ item }: CartItemProps) {
-  const { updateQuantity, removeFromCart } = useCart();
-  const { product, quantity, subtotal } = item;
+  const { updateQuantity, removeFromCart, toggleSubscription } = useCart();
+  const { product, quantity, subtotal, isSubscription, subscriptionFrequency } = item;
+  const [showFrequencySelector, setShowFrequencySelector] = useState(false);
 
   const handleIncrement = () => {
     updateQuantity(product.id, quantity + 1);
@@ -31,8 +34,23 @@ export default function CartItem({ item }: CartItemProps) {
     removeFromCart(product.id);
   };
 
+  const handleToggleSubscription = () => {
+    if (!isSubscription) {
+      setShowFrequencySelector(true);
+    } else {
+      toggleSubscription(product.id, false);
+      setShowFrequencySelector(false);
+    }
+  };
+
+  const handleSelectFrequency = (frequency: SubscriptionFrequency) => {
+    toggleSubscription(product.id, true, frequency);
+    setShowFrequencySelector(false);
+  };
+
   return (
-    <div className="flex gap-4 p-4 bg-white rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
+    <div className="bg-white rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
+      <div className="flex gap-4 p-4">
       {/* Product Image */}
       <div
         className="w-24 h-24 flex-shrink-0 bg-cover bg-center rounded-lg"
@@ -84,6 +102,71 @@ export default function CartItem({ item }: CartItemProps) {
         <div className="text-right">
           <p className="text-lg font-bold text-primary">{formatCurrency(subtotal)}</p>
         </div>
+      </div>
+      </div>
+
+      {/* Subscription Toggle */}
+      <div className="px-4 pb-4 border-t border-gray-100 pt-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleToggleSubscription}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
+                isSubscription
+                  ? 'bg-green-500 text-black hover:bg-green-600'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              {isSubscription ? (
+                <>
+                  <Check className="w-4 h-4" />
+                  Assinatura Ativa
+                </>
+              ) : (
+                <>
+                  <Repeat className="w-4 h-4" />
+                  Assinar este produto
+                </>
+              )}
+            </button>
+            {isSubscription && subscriptionFrequency && (
+              <span className="text-sm text-gray-600">
+                • {SubscriptionFrequencyLabels[subscriptionFrequency]}
+              </span>
+            )}
+          </div>
+          {isSubscription && (
+            <div className="bg-yellow-50 px-3 py-1 rounded-full">
+              <span className="text-xs font-semibold text-yellow-800">10% de desconto</span>
+            </div>
+          )}
+        </div>
+
+        {/* Frequency Selector */}
+        {showFrequencySelector && (
+          <div className="mt-3 p-3 bg-gray-50 rounded-lg">
+            <p className="text-sm font-medium text-gray-700 mb-2">
+              Escolha a frequência de entrega:
+            </p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+              {Object.values(SubscriptionFrequency).map((freq) => (
+                <button
+                  key={freq}
+                  onClick={() => handleSelectFrequency(freq)}
+                  className="px-3 py-2 bg-white border border-gray-300 rounded-lg hover:bg-green-50 hover:border-green-500 transition-colors text-sm font-medium"
+                >
+                  {SubscriptionFrequencyLabels[freq]}
+                </button>
+              ))}
+            </div>
+            <button
+              onClick={() => setShowFrequencySelector(false)}
+              className="mt-2 text-sm text-gray-500 hover:text-gray-700"
+            >
+              Cancelar
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -25,9 +25,9 @@ import ForgotPasswordPage from './app/public/ForgotPasswordPage';
 import ResetPasswordPage from './app/public/ResetPasswordPage';
 import ProductsCategory from './app/public/ProductsCategory';
 import ProductDetail from './app/public/ProductDetail';
-import OffersPage from './app/public/OffersPage';
 import SellerDetail from './app/public/SellerDetail';
 import SellersPage from './app/public/SellersPage';
+import SearchProducts from './app/public/SearchProducts';
 import CartPage from './app/public/CartPage';
 import CheckoutPage from './app/public/CheckoutPage';
 import OrdersPage from './app/public/OrdersPage';
@@ -39,13 +39,9 @@ import SellerOnboarding from './features/seller/pages/SellerOnboarding';
 import SellerProfilePage from './features/seller/pages/SellerProfilePage';
 import ForSellersPage from './app/public/ForSellersPage';
 import ProductCreatePage from './features/products/pages/ProductCreatePage';
-import SubscriptionPlansPage from './app/SubscriptionPlansPage';
-import SubscribePage from './app/SubscribePage';
 import MySubscriptionsPage from './app/MySubscriptionsPage';
 import SellerSubscriptionsPage from './app/seller/SellerSubscriptionsPage';
 import SellerDeliveriesPage from './app/seller/SellerDeliveriesPage';
-import SellerSubscriptionPlansPage from './app/seller/SellerSubscriptionPlansPage';
-import SellerSubscriptionPlanFormPage from './app/seller/SellerSubscriptionPlanFormPage';
 
 function App() {
   return (
@@ -87,8 +83,8 @@ function App() {
           <Route path="/products/:category" element={<ProductsCategory />} />
           <Route path="/product/:id" element={<ProductDetail />} />
 
-          {/* Offers */}
-          <Route path="/offers" element={<OffersPage />} />
+          {/* Search */}
+          <Route path="/search" element={<SearchProducts />} />
 
           {/* Sellers */}
           <Route path="/sellers" element={<SellersPage />} />
@@ -205,19 +201,6 @@ function App() {
             }
           />
 
-          {/* Subscription Plans - Public */}
-          <Route path="/subscription-plans" element={<SubscriptionPlansPage />} />
-
-          {/* Subscribe to Plan - Protected */}
-          <Route
-            path="/subscribe/:planId"
-            element={
-              <ProtectedRoute>
-                <SubscribePage />
-              </ProtectedRoute>
-            }
-          />
-
           {/* My Subscriptions - Protected */}
           <Route
             path="/my-subscriptions"
@@ -244,36 +227,6 @@ function App() {
             element={
               <ProtectedRoute requireSeller>
                 <SellerDeliveriesPage />
-              </ProtectedRoute>
-            }
-          />
-
-          {/* Seller Subscription Plans - Protected (Sellers Only) */}
-          <Route
-            path="/seller/subscription-plans"
-            element={
-              <ProtectedRoute requireSeller>
-                <SellerSubscriptionPlansPage />
-              </ProtectedRoute>
-            }
-          />
-
-          {/* Seller Subscription Plans Create - Protected (Sellers Only) */}
-          <Route
-            path="/seller/subscription-plans/create"
-            element={
-              <ProtectedRoute requireSeller>
-                <SellerSubscriptionPlanFormPage />
-              </ProtectedRoute>
-            }
-          />
-
-          {/* Seller Subscription Plans Edit - Protected (Sellers Only) */}
-          <Route
-            path="/seller/subscription-plans/edit/:planId"
-            element={
-              <ProtectedRoute requireSeller>
-                <SellerSubscriptionPlanFormPage />
               </ProtectedRoute>
             }
           />

@@ -4,9 +4,6 @@
 
 import api from './api';
 import type {
-  SubscriptionPlan,
-  SubscriptionPlanCreate,
-  SubscriptionPlanUpdate,
   Subscription,
   SubscriptionCreate,
   SubscriptionUpdate,
@@ -15,82 +12,8 @@ import type {
   SubscriptionStatus,
 } from '../types';
 
-// Subscription Plans (Seller)
-export const subscriptionPlanService = {
-  // Public: List all active subscription plans
-  listPublic: async (sellerId?: number, skip: number = 0, limit: number = 20): Promise<SubscriptionPlan[]> => {
-    const response = await api.get<SubscriptionPlan[]>('/subscription-plans/public', {
-      params: { seller_id: sellerId, skip, limit },
-    });
-    return response.data;
-  },
-
-  // Public: Get a specific plan
-  getPublic: async (planId: number): Promise<SubscriptionPlan> => {
-    const response = await api.get<SubscriptionPlan>(`/subscription-plans/public/${planId}`);
-    return response.data;
-  },
-
-  // Create a new subscription plan
-  create: async (data: SubscriptionPlanCreate): Promise<SubscriptionPlan> => {
-    const response = await api.post<SubscriptionPlan>('/subscription-plans/', data);
-    return response.data;
-  },
-
-  // List all plans for current seller
-  list: async (activeOnly: boolean = true): Promise<SubscriptionPlan[]> => {
-    const response = await api.get<SubscriptionPlan[]>('/subscription-plans/', {
-      params: { active_only: activeOnly },
-    });
-    return response.data;
-  },
-
-  // Get a specific plan
-  get: async (planId: number): Promise<SubscriptionPlan> => {
-    const response = await api.get<SubscriptionPlan>(`/subscription-plans/${planId}`);
-    return response.data;
-  },
-
-  // Update a plan
-  update: async (
-    planId: number,
-    data: SubscriptionPlanUpdate
-  ): Promise<SubscriptionPlan> => {
-    const response = await api.patch<SubscriptionPlan>(
-      `/subscription-plans/${planId}`,
-      data
-    );
-    return response.data;
-  },
-
-  // Delete a plan
-  delete: async (planId: number): Promise<void> => {
-    await api.delete(`/subscription-plans/${planId}`);
-  },
-};
-
 // Subscriptions (Customer)
 export const subscriptionService = {
-  // Create subscription directly from a plan (simplified)
-  createFromPlan: async (
-    planId: number,
-    deliveryAddress: any,
-    paymentMethod: string,
-    deliveryDayOfWeek?: number,
-    deliveryDayOfMonth?: number
-  ): Promise<Subscription> => {
-    const response = await api.post<Subscription>(
-      `/subscriptions/from-plan/${planId}`,
-      {
-        delivery_address: deliveryAddress,
-        payment_method: paymentMethod,
-        delivery_day_of_week: deliveryDayOfWeek,
-        delivery_day_of_month: deliveryDayOfMonth,
-      }
-    );
-    return response.data;
-  },
-
   // Create a new subscription
   create: async (data: SubscriptionCreate): Promise<Subscription> => {
     const response = await api.post<Subscription>('/subscriptions/', data);

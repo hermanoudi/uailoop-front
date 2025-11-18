@@ -96,11 +96,11 @@ export default function MySubscriptionsPage() {
           <div className="flex items-center justify-between">
             <h1 className="text-3xl font-bold text-gray-900">Minhas Assinaturas</h1>
             <Link
-              to="/subscription-plans"
+              to="/"
               className="inline-flex items-center gap-2 bg-green-500 text-black px-6 py-3 rounded-lg hover:bg-green-600 transition-colors font-semibold"
             >
               <Plus className="w-5 h-5" />
-              Nova Assinatura
+              Explorar Produtos
             </Link>
           </div>
 
@@ -144,14 +144,14 @@ export default function MySubscriptionsPage() {
                 : `Nenhuma assinatura ${SubscriptionStatusLabels[selectedStatus as SubscriptionStatus].toLowerCase()}`}
             </h3>
             <p className="text-gray-500 mb-6">
-              Assine um plano para receber produtos regularmente
+              Adicione produtos ao carrinho e ative a opção "Assinar" para receber produtos regularmente
             </p>
             <Link
-              to="/subscription-plans"
+              to="/"
               className="inline-flex items-center gap-2 bg-green-500 text-black px-6 py-3 rounded-lg hover:bg-green-600 transition-colors font-semibold"
             >
               <Plus className="w-5 h-5" />
-              Explorar Planos
+              Explorar Produtos
             </Link>
           </div>
         ) : (

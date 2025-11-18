@@ -2,10 +2,12 @@
  * CartContext - Context for managing shopping cart state
  */
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import toast from 'react-hot-toast';
+import { useAuth } from './AuthContext';
 import type { Cart, CartContextType, CartItem } from '../types/cart';
 import type { ProductListItem } from '../types/product';
+import type { SubscriptionFrequency } from '../types/subscription';
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
@@ -36,6 +38,8 @@ const showToast = (message: string, type: 'success' | 'error' = 'success') => {
 };
 
 export function CartProvider({ children }: CartProviderProps) {
+  const { user } = useAuth();
+
   const [cart, setCart] = useState<Cart>(() => {
     // Load cart from localStorage on init
     const savedCart = localStorage.getItem(CART_STORAGE_KEY);
@@ -53,6 +57,14 @@ export function CartProvider({ children }: CartProviderProps) {
   useEffect(() => {
     localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
   }, [cart]);
+
+  // Clear cart when user logs out
+  useEffect(() => {
+    if (!user) {
+      setCart({ items: [], totalItems: 0, totalPrice: 0 });
+      localStorage.removeItem(CART_STORAGE_KEY);
+    }
+  }, [user]);
 
   const calculateTotals = (items: CartItem[]): { totalItems: number; totalPrice: number } => {
     const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
@@ -149,6 +161,38 @@ export function CartProvider({ children }: CartProviderProps) {
     return item ? item.quantity : 0;
   };
 
+  const toggleSubscription = (
+    productId: number,
+    isSubscription: boolean,
+    frequency?: SubscriptionFrequency
+  ) => {
+    setCart((prevCart) => {
+      const newItems = prevCart.items.map((item) => {
+        if (item.product.id === productId) {
+          return {
+            ...item,
+            isSubscription,
+            subscriptionFrequency: isSubscription ? frequency : undefined,
+          };
+        }
+        return item;
+      });
+
+      const totals = calculateTotals(newItems);
+
+      if (isSubscription) {
+        showToast('Produto adicionado à assinatura!');
+      } else {
+        showToast('Produto removido da assinatura');
+      }
+
+      return {
+        items: newItems,
+        ...totals,
+      };
+    });
+  };
+
   return (
     <CartContext.Provider
       value={{
@@ -159,6 +203,7 @@ export function CartProvider({ children }: CartProviderProps) {
         clearCart,
         isInCart,
         getItemQuantity,
+        toggleSubscription,
       }}
     >
       {children}

@@ -1,15 +1,10 @@
 import { Link } from 'react-router-dom';
-import { Check, Package, MapPin, CreditCard, TrendingUp, Shield, Star, Zap } from 'lucide-react';
+import { Check, Package, MapPin, Shield, Star, ShoppingBag, Repeat } from 'lucide-react';
 import Button from '../../components/ui/Button';
 import { useSellers } from '../../features/sellers/hooks/useSellers';
-import { useFeaturedOffers } from '../../features/offers/hooks/useOffers';
 import SellerCard from '../../features/sellers/components/SellerCard';
-import OfferCard from '../../features/offers/components/OfferCard';
 
 export default function Home() {
-  // Buscar ofertas em destaque (6 primeiras)
-  const { offers, loading: loadingOffers } = useFeaturedOffers(6);
-
   // Buscar vendedores em destaque (3 primeiros)
   const { sellers, loading: loadingSellers } = useSellers({ size: 3 });
 
@@ -25,23 +20,23 @@ export default function Home() {
         <div className="container-custom h-full flex items-center">
           <div className="max-w-2xl text-white">
             <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
-              Faça parte do<br />
-              <span className="text-primary">UaiLoop</span>
+              Marketplace Local<br />
+              <span className="text-primary">Entrega Recorrente</span>
             </h1>
             <p className="text-2xl mb-8 leading-relaxed">
-              Açougues, Padarias e Produtos de Limpeza<br />
-              direto na sua porta todo mês
+              Conecte-se com os melhores vendedores da sua região.<br />
+              Compre uma vez ou assine para receber regularmente.
             </p>
 
             {/* Benefícios principais */}
             <div className="space-y-3 mb-8">
               <div className="flex items-center gap-3">
                 <Check className="w-6 h-6 text-primary" />
-                <span className="text-lg">Produtos frescos e de qualidade premium</span>
+                <span className="text-lg">Qualquer produto pode virar assinatura</span>
               </div>
               <div className="flex items-center gap-3">
                 <Check className="w-6 h-6 text-primary" />
-                <span className="text-lg">Descontos exclusivos para assinantes</span>
+                <span className="text-lg">10% de desconto em assinaturas</span>
               </div>
               <div className="flex items-center gap-3">
                 <Check className="w-6 h-6 text-primary" />
@@ -49,11 +44,19 @@ export default function Home() {
               </div>
             </div>
 
-            <Link to="/register">
-              <Button size="lg" className="!bg-primary !text-white !text-xl !px-12 !py-6 hover:!bg-primary-dark">
-                ASSINE JÁ
-              </Button>
-            </Link>
+            <div className="flex gap-4">
+              <Link to="/sellers">
+                <Button size="lg" className="!bg-primary !text-white !text-xl !px-8 !py-6 hover:!bg-primary-dark">
+                  <ShoppingBag className="w-6 h-6 mr-2" />
+                  Explorar Produtos
+                </Button>
+              </Link>
+              <Link to="/register">
+                <Button size="lg" className="!bg-white !text-primary !text-xl !px-8 !py-6 hover:!bg-gray-100">
+                  Criar Conta
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -62,10 +65,10 @@ export default function Home() {
       <section className="py-20 bg-gray-50">
         <div className="container-custom">
           <h2 className="text-4xl font-bold text-center text-dark mb-4">
-            Como Funciona o UaiLoop
+            Como Funciona
           </h2>
           <p className="text-xl text-center text-light-gray mb-16 max-w-3xl mx-auto">
-            Conectamos você com os melhores vendedores locais através de assinaturas recorrentes
+            Compre produtos locais de forma simples e prática, com a opção de receber regularmente
           </p>
 
           <div className="grid md:grid-cols-3 gap-12">
@@ -73,15 +76,15 @@ export default function Home() {
             <div className="text-center">
               <div className="w-32 h-32 mx-auto mb-6 bg-white rounded-full flex items-center justify-center shadow-lg">
                 <div className="relative">
-                  <Package className="w-16 h-16 text-primary" />
+                  <ShoppingBag className="w-16 h-16 text-primary" />
                   <div className="absolute -top-2 -right-2 w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center font-bold">
                     1
                   </div>
                 </div>
               </div>
-              <h3 className="text-2xl font-bold text-dark mb-3">Escolha seu Plano</h3>
+              <h3 className="text-2xl font-bold text-dark mb-3">Escolha seus Produtos</h3>
               <p className="text-light-gray text-lg">
-                Navegue pelas categorias e escolha os vendedores e produtos que mais gosta
+                Navegue pelos vendedores locais e adicione os produtos que deseja ao carrinho
               </p>
             </div>
 
@@ -89,15 +92,15 @@ export default function Home() {
             <div className="text-center">
               <div className="w-32 h-32 mx-auto mb-6 bg-white rounded-full flex items-center justify-center shadow-lg">
                 <div className="relative">
-                  <CreditCard className="w-16 h-16 text-primary" />
+                  <Repeat className="w-16 h-16 text-primary" />
                   <div className="absolute -top-2 -right-2 w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center font-bold">
                     2
                   </div>
                 </div>
               </div>
-              <h3 className="text-2xl font-bold text-dark mb-3">Faça sua Assinatura</h3>
+              <h3 className="text-2xl font-bold text-dark mb-3">Assine se Quiser</h3>
               <p className="text-light-gray text-lg">
-                Defina a frequência (semanal, quinzenal ou mensal) e forma de pagamento
+                Transforme qualquer produto em assinatura e ganhe 10% de desconto nas entregas
               </p>
             </div>
 
@@ -113,29 +116,136 @@ export default function Home() {
               </div>
               <h3 className="text-2xl font-bold text-dark mb-3">Receba em Casa</h3>
               <p className="text-light-gray text-lg">
-                Produtos frescos entregues automaticamente na sua porta
+                Produtos frescos entregues por vendedores locais no dia e horário que você escolher
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Vantagens de Ser Assinante */}
-      <section className="py-20">
+      {/* Categorias Principais - Destaque */}
+      <section className="py-20 bg-white">
+        <div className="container-custom">
+          <h2 className="text-4xl font-bold text-center text-dark mb-4">
+            Explore por Categoria
+          </h2>
+          <p className="text-xl text-center text-light-gray mb-16">
+            Escolha entre as principais categorias de produtos locais
+          </p>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* Açougues */}
+            <Link to="/products/acougues" className="group">
+              <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all">
+                <div
+                  className="h-64 bg-cover bg-center relative"
+                  style={{
+                    backgroundImage: "url('https://images.unsplash.com/photo-1588168333986-5078d3ae3976?w=600&h=400&fit=crop')"
+                  }}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
+                    <div className="p-6 w-full">
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-3xl font-bold text-white">🥩 Açougues</h3>
+                        <span className="bg-primary text-white text-xs font-bold px-3 py-1 rounded-full">
+                          POPULAR
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-6">
+                  <p className="text-light-gray mb-4">
+                    Carnes frescas e de qualidade premium dos melhores açougues da região
+                  </p>
+                  <Button variant="secondary" className="w-full">
+                    Ver Açougues
+                  </Button>
+                </div>
+              </div>
+            </Link>
+
+            {/* Padarias */}
+            <Link to="/products/padarias" className="group">
+              <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all">
+                <div
+                  className="h-64 bg-cover bg-center relative"
+                  style={{
+                    backgroundImage: "url('https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&h=400&fit=crop')"
+                  }}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
+                    <div className="p-6 w-full">
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-3xl font-bold text-white">🥖 Padarias</h3>
+                        <span className="bg-primary text-white text-xs font-bold px-3 py-1 rounded-full">
+                          POPULAR
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-6">
+                  <p className="text-light-gray mb-4">
+                    Pães quentinhos e produtos de padaria frescos das padarias locais
+                  </p>
+                  <Button variant="secondary" className="w-full">
+                    Ver Padarias
+                  </Button>
+                </div>
+              </div>
+            </Link>
+
+            {/* Limpeza */}
+            <Link to="/products/limpeza" className="group">
+              <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all">
+                <div
+                  className="h-64 bg-cover bg-center relative"
+                  style={{
+                    backgroundImage: "url('https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?w=600&h=400&fit=crop')"
+                  }}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
+                    <div className="p-6 w-full">
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-3xl font-bold text-white">🧹 Limpeza</h3>
+                        <span className="bg-primary text-white text-xs font-bold px-3 py-1 rounded-full">
+                          POPULAR
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-6">
+                  <p className="text-light-gray mb-4">
+                    Produtos de limpeza essenciais com entrega regular na sua casa
+                  </p>
+                  <Button variant="secondary" className="w-full">
+                    Ver Produtos
+                  </Button>
+                </div>
+              </div>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Vantagens do UaiLoop */}
+      <section className="py-20 bg-gray-50">
         <div className="container-custom">
           <h2 className="text-4xl font-bold text-center text-dark mb-16">
-            Vantagens de Ser Assinante
+            Por Que Escolher o UaiLoop?
           </h2>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* Vantagem 1 */}
             <div className="bg-white p-8 rounded-xl shadow-md hover:shadow-xl transition-shadow">
               <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-                <TrendingUp className="w-8 h-8 text-primary" />
+                <Repeat className="w-8 h-8 text-primary" />
               </div>
-              <h3 className="text-xl font-bold text-dark mb-3">Economia Garantida</h3>
+              <h3 className="text-xl font-bold text-dark mb-3">Assinaturas Flexíveis</h3>
               <p className="text-light-gray">
-                Descontos exclusivos de até 15% para assinantes em todos os produtos
+                Transforme qualquer produto em assinatura e ganhe 10% de desconto automático
               </p>
             </div>
 
@@ -146,7 +256,7 @@ export default function Home() {
               </div>
               <h3 className="text-xl font-bold text-dark mb-3">Produtos Frescos</h3>
               <p className="text-light-gray">
-                Receba carnes, pães e produtos de limpeza sempre frescos e de qualidade
+                Receba carnes, pães e produtos sempre frescos e de qualidade direto dos vendedores
               </p>
             </div>
 
@@ -155,9 +265,9 @@ export default function Home() {
               <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
                 <MapPin className="w-8 h-8 text-primary" />
               </div>
-              <h3 className="text-xl font-bold text-dark mb-3">Entrega no seu Bairro</h3>
+              <h3 className="text-xl font-bold text-dark mb-3">Entrega Local</h3>
               <p className="text-light-gray">
-                Vendedores locais garantem entrega rápida e produtos da sua região
+                Vendedores da sua região garantem entrega rápida e produtos locais
               </p>
             </div>
 
@@ -190,50 +300,16 @@ export default function Home() {
               </div>
               <h3 className="text-xl font-bold text-dark mb-3">Praticidade Total</h3>
               <p className="text-light-gray">
-                Cancele ou pause sua assinatura quando quiser, sem burocracia
+                Compre uma vez ou assine. Cancele ou pause quando quiser, sem burocracia
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Super Ofertas */}
-      {!loadingOffers && offers.length > 0 && (
-        <section className="py-20 bg-gray-50">
-          <div className="container-custom">
-            <div className="text-center mb-12">
-              <div className="inline-flex items-center gap-2 bg-dark text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
-                <Zap className="w-4 h-4" />
-                PROMOÇÕES ATIVAS
-              </div>
-              <h2 className="text-4xl font-bold text-dark mb-4">
-                Super Ofertas
-              </h2>
-              <p className="text-xl text-light-gray">
-                Aproveite descontos incríveis por tempo limitado!
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {offers.map((offer) => (
-                <OfferCard key={offer.id} offer={offer} />
-              ))}
-            </div>
-
-            <div className="text-center mt-12">
-              <Link to="/offers">
-                <Button size="lg" className="!bg-primary hover:!bg-primary-dark !text-white">
-                  Ver Todas as Ofertas
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </section>
-      )}
-
       {/* Vendedores em Destaque */}
       {!loadingSellers && sellers.length > 0 && (
-        <section className="py-20 bg-gray-50">
+        <section className="py-20">
           <div className="container-custom">
             <h2 className="text-4xl font-bold text-center text-dark mb-4">
               Vendedores em Destaque
@@ -258,113 +334,6 @@ export default function Home() {
           </div>
         </section>
       )}
-
-      {/* Categorias Principais - Cards Grandes */}
-      <section className="py-20 bg-white">
-        <div className="container-custom">
-          <h2 className="text-4xl font-bold text-center text-dark mb-4">
-            Nossas Categorias
-          </h2>
-          <p className="text-xl text-center text-light-gray mb-16">
-            Escolha entre as principais categorias de produtos locais
-          </p>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {/* Açougues */}
-            <Link to="/products/acougues" className="group">
-              <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all">
-                <div
-                  className="h-64 bg-cover bg-center relative"
-                  style={{
-                    backgroundImage: "url('https://images.unsplash.com/photo-1588168333986-5078d3ae3976?w=600&h=400&fit=crop')"
-                  }}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
-                    <div className="p-6 w-full">
-                      <div className="flex items-center justify-between">
-                        <h3 className="text-3xl font-bold text-white">🥩 Açougues</h3>
-                        <span className="bg-primary text-white text-xs font-bold px-3 py-1 rounded-full">
-                          PRINCIPAL
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="p-6">
-                  <p className="text-light-gray mb-4">
-                    Carnes frescas e de qualidade premium entregues semanalmente na sua casa
-                  </p>
-                  <Button variant="secondary" className="w-full">
-                    Ver Açougues
-                  </Button>
-                </div>
-              </div>
-            </Link>
-
-            {/* Padarias */}
-            <Link to="/products/padarias" className="group">
-              <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all">
-                <div
-                  className="h-64 bg-cover bg-center relative"
-                  style={{
-                    backgroundImage: "url('https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&h=400&fit=crop')"
-                  }}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
-                    <div className="p-6 w-full">
-                      <div className="flex items-center justify-between">
-                        <h3 className="text-3xl font-bold text-white">🥖 Padarias</h3>
-                        <span className="bg-primary text-white text-xs font-bold px-3 py-1 rounded-full">
-                          PRINCIPAL
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="p-6">
-                  <p className="text-light-gray mb-4">
-                    Pães quentinhos e produtos de padaria frescos todos os dias
-                  </p>
-                  <Button variant="secondary" className="w-full">
-                    Ver Padarias
-                  </Button>
-                </div>
-              </div>
-            </Link>
-
-            {/* Limpeza */}
-            <Link to="/products/limpeza" className="group">
-              <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all">
-                <div
-                  className="h-64 bg-cover bg-center relative"
-                  style={{
-                    backgroundImage: "url('https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?w=600&h=400&fit=crop')"
-                  }}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
-                    <div className="p-6 w-full">
-                      <div className="flex items-center justify-between">
-                        <h3 className="text-3xl font-bold text-white">🧹 Limpeza</h3>
-                        <span className="bg-primary text-white text-xs font-bold px-3 py-1 rounded-full">
-                          PRINCIPAL
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="p-6">
-                  <p className="text-light-gray mb-4">
-                    Produtos de limpeza essenciais entregues mensalmente
-                  </p>
-                  <Button variant="secondary" className="w-full">
-                    Ver Produtos
-                  </Button>
-                </div>
-              </div>
-            </Link>
-          </div>
-        </div>
-      </section>
 
       {/* Depoimentos */}
       <section className="py-20">
@@ -448,18 +417,28 @@ export default function Home() {
             Pronto para Começar?
           </h2>
           <p className="text-2xl mb-8 max-w-2xl mx-auto">
-            Junte-se a milhares de clientes satisfeitos e comece a receber produtos frescos hoje mesmo
+            Descubra os melhores vendedores locais da sua região e receba produtos frescos na sua casa
           </p>
-          <Link to="/register">
-            <Button
-              size="lg"
-              className="!bg-white !text-primary !border-white hover:!bg-gray-100 !text-xl !px-12 !py-6"
-            >
-              ASSINE AGORA
-            </Button>
-          </Link>
+          <div className="flex gap-4 justify-center">
+            <Link to="/sellers">
+              <Button
+                size="lg"
+                className="!bg-white !text-primary !border-white hover:!bg-gray-100 !text-xl !px-12 !py-6"
+              >
+                EXPLORAR PRODUTOS
+              </Button>
+            </Link>
+            <Link to="/register">
+              <Button
+                size="lg"
+                className="!bg-transparent !text-white !border-2 !border-white hover:!bg-white/10 !text-xl !px-12 !py-6"
+              >
+                CRIAR CONTA
+              </Button>
+            </Link>
+          </div>
           <p className="mt-6 text-lg opacity-90">
-            Sem fidelidade • Cancele quando quiser • Primeira entrega grátis
+            Compre uma vez ou assine • 10% de desconto em assinaturas • Cancele quando quiser
           </p>
         </div>
       </section>
@@ -477,16 +456,16 @@ export default function Home() {
                 Como funciona a entrega?
               </summary>
               <p className="mt-4 text-light-gray">
-                A entrega é feita pelos próprios vendedores locais da sua região. Você escolhe o dia e horário mais conveniente no momento da assinatura.
+                A entrega é feita pelos próprios vendedores locais da sua região. Você escolhe o dia e horário mais conveniente no momento da compra.
               </p>
             </details>
 
             <details className="bg-white p-6 rounded-xl shadow-md">
               <summary className="font-bold text-lg text-dark cursor-pointer">
-                Posso cancelar a assinatura?
+                Como funcionam as assinaturas?
               </summary>
               <p className="mt-4 text-light-gray">
-                Sim! Você pode cancelar ou pausar sua assinatura a qualquer momento, sem multas ou taxas de cancelamento.
+                Ao adicionar produtos ao carrinho, você pode optar por transformá-los em assinatura. Escolha a frequência de entrega (diária, semanal, quinzenal ou mensal) e ganhe 10% de desconto automático. Você pode cancelar ou pausar quando quiser.
               </p>
             </details>
 
@@ -495,7 +474,16 @@ export default function Home() {
                 Quais formas de pagamento são aceitas?
               </summary>
               <p className="mt-4 text-light-gray">
-                Aceitamos cartão de crédito, débito e PIX. O pagamento é processado automaticamente na data combinada.
+                Aceitamos cartão de crédito, débito e PIX. Para assinaturas, o pagamento é processado automaticamente a cada renovação.
+              </p>
+            </details>
+
+            <details className="bg-white p-6 rounded-xl shadow-md">
+              <summary className="font-bold text-lg text-dark cursor-pointer">
+                Posso comprar sem fazer assinatura?
+              </summary>
+              <p className="mt-4 text-light-gray">
+                Sim! Você pode fazer compras avulsas normalmente. A assinatura é totalmente opcional e está disponível para qualquer produto que você desejar receber regularmente.
               </p>
             </details>
 
@@ -504,7 +492,7 @@ export default function Home() {
                 Como são escolhidos os vendedores?
               </summary>
               <p className="mt-4 text-light-gray">
-                Todos os vendedores passam por um processo de verificação e são avaliados pelos clientes. Trabalhamos apenas com estabelecimentos de qualidade comprovada.
+                Todos os vendedores passam por um processo de verificação e são avaliados pelos clientes. Trabalhamos apenas com estabelecimentos de qualidade comprovada da sua região.
               </p>
             </details>
           </div>
