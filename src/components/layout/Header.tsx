@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, User, MapPin, ShoppingCart, Menu, LogOut, LayoutDashboard, Package, Settings, BoxIcon } from 'lucide-react';
+import { Search, User, MapPin, ShoppingCart, Menu, LogOut, LayoutDashboard, Package, Settings, BoxIcon, Repeat, Truck } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { useCart } from '../../contexts/CartContext';
 import { useAuth } from '../../contexts/AuthContext';
@@ -152,16 +152,50 @@ export default function Header() {
                           <Package className="w-4 h-4 text-dark" />
                           <span className="text-sm text-dark">Gerenciar Pedidos</span>
                         </Link>
+                        <Link
+                          to="/seller/subscription-plans"
+                          className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
+                          onClick={() => setShowUserMenu(false)}
+                        >
+                          <Repeat className="w-4 h-4 text-dark" />
+                          <span className="text-sm text-dark">Planos de Assinatura</span>
+                        </Link>
+                        <Link
+                          to="/seller/subscriptions"
+                          className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
+                          onClick={() => setShowUserMenu(false)}
+                        >
+                          <Repeat className="w-4 h-4 text-dark" />
+                          <span className="text-sm text-dark">Assinaturas dos Clientes</span>
+                        </Link>
+                        <Link
+                          to="/seller/deliveries"
+                          className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
+                          onClick={() => setShowUserMenu(false)}
+                        >
+                          <Truck className="w-4 h-4 text-dark" />
+                          <span className="text-sm text-dark">Próximas Entregas</span>
+                        </Link>
                       </>
                     ) : (
-                      <Link
-                        to="/orders"
-                        className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
-                        onClick={() => setShowUserMenu(false)}
-                      >
-                        <Package className="w-4 h-4 text-dark" />
-                        <span className="text-sm text-dark">Meus Pedidos</span>
-                      </Link>
+                      <>
+                        <Link
+                          to="/orders"
+                          className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
+                          onClick={() => setShowUserMenu(false)}
+                        >
+                          <Package className="w-4 h-4 text-dark" />
+                          <span className="text-sm text-dark">Meus Pedidos</span>
+                        </Link>
+                        <Link
+                          to="/my-subscriptions"
+                          className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
+                          onClick={() => setShowUserMenu(false)}
+                        >
+                          <Repeat className="w-4 h-4 text-dark" />
+                          <span className="text-sm text-dark">Minhas Assinaturas</span>
+                        </Link>
+                      </>
                     )}
 
                     <button
@@ -272,6 +306,15 @@ export default function Header() {
             </li>
             <li>
               <Link
+                to="/subscription-plans"
+                className="text-dark hover:text-primary font-medium transition-colors flex items-center gap-2"
+              >
+                <Repeat className="w-5 h-5" />
+                ASSINATURAS
+              </Link>
+            </li>
+            <li>
+              <Link
                 to="/offers"
                 className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors font-medium"
               >
@@ -318,6 +361,13 @@ export default function Header() {
                 className="block py-2 text-dark hover:text-primary font-medium"
               >
                 🐾 PET
+              </Link>
+              <Link
+                to="/subscription-plans"
+                className="flex items-center gap-2 py-2 text-dark hover:text-primary font-medium"
+              >
+                <Repeat className="w-5 h-5" />
+                ASSINATURAS
               </Link>
               <Link
                 to="/offers"

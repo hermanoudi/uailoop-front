@@ -16,6 +16,7 @@ export interface User {
   city: string;
   state: string;
   is_seller: boolean;
+  seller_id: number | null;
   is_active: boolean;
   created_at: string;
 }

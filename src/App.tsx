@@ -39,6 +39,13 @@ import SellerOnboarding from './features/seller/pages/SellerOnboarding';
 import SellerProfilePage from './features/seller/pages/SellerProfilePage';
 import ForSellersPage from './app/public/ForSellersPage';
 import ProductCreatePage from './features/products/pages/ProductCreatePage';
+import SubscriptionPlansPage from './app/SubscriptionPlansPage';
+import SubscribePage from './app/SubscribePage';
+import MySubscriptionsPage from './app/MySubscriptionsPage';
+import SellerSubscriptionsPage from './app/seller/SellerSubscriptionsPage';
+import SellerDeliveriesPage from './app/seller/SellerDeliveriesPage';
+import SellerSubscriptionPlansPage from './app/seller/SellerSubscriptionPlansPage';
+import SellerSubscriptionPlanFormPage from './app/seller/SellerSubscriptionPlanFormPage';
 
 function App() {
   return (
@@ -198,6 +205,78 @@ function App() {
             }
           />
 
+          {/* Subscription Plans - Public */}
+          <Route path="/subscription-plans" element={<SubscriptionPlansPage />} />
+
+          {/* Subscribe to Plan - Protected */}
+          <Route
+            path="/subscribe/:planId"
+            element={
+              <ProtectedRoute>
+                <SubscribePage />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* My Subscriptions - Protected */}
+          <Route
+            path="/my-subscriptions"
+            element={
+              <ProtectedRoute>
+                <MySubscriptionsPage />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Seller Subscriptions - Protected (Sellers Only) */}
+          <Route
+            path="/seller/subscriptions"
+            element={
+              <ProtectedRoute requireSeller>
+                <SellerSubscriptionsPage />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Seller Deliveries - Protected (Sellers Only) */}
+          <Route
+            path="/seller/deliveries"
+            element={
+              <ProtectedRoute requireSeller>
+                <SellerDeliveriesPage />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Seller Subscription Plans - Protected (Sellers Only) */}
+          <Route
+            path="/seller/subscription-plans"
+            element={
+              <ProtectedRoute requireSeller>
+                <SellerSubscriptionPlansPage />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Seller Subscription Plans Create - Protected (Sellers Only) */}
+          <Route
+            path="/seller/subscription-plans/create"
+            element={
+              <ProtectedRoute requireSeller>
+                <SellerSubscriptionPlanFormPage />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Seller Subscription Plans Edit - Protected (Sellers Only) */}
+          <Route
+            path="/seller/subscription-plans/edit/:planId"
+            element={
+              <ProtectedRoute requireSeller>
+                <SellerSubscriptionPlanFormPage />
+              </ProtectedRoute>
+            }
+          />
 
           {/* 404 */}
           <Route path="*" element={<div className="container-custom py-20 text-center"><h1 className="text-4xl font-bold">404 - Página não encontrada</h1></div>} />
